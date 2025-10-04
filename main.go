@@ -31,23 +31,21 @@ func main() {
 
 	r := gin.Default()
 	
-	// 设置API路由
 	r.GET("/trace", func(c *gin.Context) {
 		txHash := c.Query("tx_hash")
 		if txHash == "" {
 			c.JSON(400, gin.H{"error": "tx_hash is required"})
 			return
 		}
+
+		trace, err := getTransactionTrace(rpcClient, txHash)
+		if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
 		
-		// 在这里调用我们的追踪逻辑
-		// trace, err := getTransactionTrace(rpcClient, txHash)
-		// ...
-		
-		c.JSON(200, gin.H{
-			"message": "trace feature coming soon",
-			"tx_hash": txHash,
-		})
+		c.JSON(200, trace)
 	})
 
-	r.Run(":8080") // 启动服务在 8080 端口
+	r.Run(":8080")
 }

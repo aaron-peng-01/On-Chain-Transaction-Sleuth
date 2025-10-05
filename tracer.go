@@ -7,7 +7,6 @@ import (
 	"github.com/ethereum/go-ethereum/rpc"
 )
 
-// 定义期望从Geth的JS tracer返回的结构
 type CallFrame struct {
 	Type    string      `json:"type"`
 	From    string      `json:"from"`
@@ -27,7 +26,7 @@ func getTransactionTrace(client *rpc.Client, txHash string) (*CallFrame, error) 
 	txHashCommon := common.HexToHash(txHash)
 
 	// Geth的 `debug_traceTransaction` 允许传入一个JS脚本作为Tracer。
-	// `callTracer` 是一个内建的、非常有用的tracer。
+	// `callTracer` 是内建tracer。
 	err := client.CallContext(context.Background(), &result, "debug_traceTransaction", txHashCommon, map[string]string{"tracer": "callTracer"})
 	if err != nil {
 		return nil, fmt.Errorf("failed to call debug_traceTransaction: %w", err)
